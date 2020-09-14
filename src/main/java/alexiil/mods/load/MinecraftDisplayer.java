@@ -4,6 +4,7 @@ import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ import net.minecraftforge.common.config.Configuration;
 
 public class MinecraftDisplayer implements IDisplayer {
     private static String sound;
-    private static String defaultSound = "betterloadingscreen:rhapsodia_orb";//"random.levelup";
+    private static String defaultSound = "betterloadingscreen:rhapsodia_orb";
     private static String fontTexture;
     private static String defaultFontTexture = "textures/font/ascii.png";
     private final boolean preview;
@@ -101,7 +102,7 @@ public class MinecraftDisplayer implements IDisplayer {
     public static String imgurGalleryLink = "https://imgur.com/gallery/Ks0TrYE";
 
     private boolean saltBGhasBeenRendered = false;
-    
+
     public static boolean isNice = false;
     public static boolean isRegisteringGTmaterials = false;
     public static boolean isReplacingVanillaMaterials = false;
@@ -122,11 +123,11 @@ public class MinecraftDisplayer implements IDisplayer {
     CountDownLatch countDownLatch = new CountDownLatch(1);
 
     private boolean experimental = false;
-    
+
     public static float getLastPercent() {
-    	return lastPercent;
+        return lastPercent;
     }
-    
+
     public static void playFinishedSound() {
         SoundHandler soundHandler = Minecraft.getMinecraft().getSoundHandler();
         ResourceLocation location = new ResourceLocation(sound);
@@ -173,7 +174,7 @@ public class MinecraftDisplayer implements IDisplayer {
         mc = Minecraft.getMinecraft();
         images = renders;
     }
-    
+
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -185,50 +186,50 @@ public class MinecraftDisplayer implements IDisplayer {
         }
         return true;
     }
-    
+
     public int[] stringToIntArray(String str) {
-    	str = str.replaceAll("\\s+","");
-    	String intBuffer = "";
-    	List<Integer> numbers = new ArrayList<Integer>();
-    	for (int i = 0; i < str.length(); i++) {
-    		if (isNumeric(String.valueOf(str.charAt(i))) || String.valueOf(str.charAt(i)).equals("-")) {
-				intBuffer += String.valueOf(str.charAt(i));
-			}
-    		if (String.valueOf(str.charAt(i)).equals(",") || String.valueOf(str.charAt(i)).equals("]")) {
-    			numbers.add(Integer.parseInt(intBuffer));
-    			intBuffer = "";
-    		}
-    	}
-    	int[] res = new int[numbers.size()];
-    	for (int i = 0; i < numbers.size(); i++) {
-    		res[i] = numbers.get(i);
-    	}
-    	return res;
+        str = str.replaceAll("\\s+","");
+        String intBuffer = "";
+        List<Integer> numbers = new ArrayList<Integer>();
+        for (int i = 0; i < str.length(); i++) {
+            if (isNumeric(String.valueOf(str.charAt(i))) || String.valueOf(str.charAt(i)).equals("-")) {
+                intBuffer += String.valueOf(str.charAt(i));
+            }
+            if (String.valueOf(str.charAt(i)).equals(",") || String.valueOf(str.charAt(i)).equals("]")) {
+                numbers.add(Integer.parseInt(intBuffer));
+                intBuffer = "";
+            }
+        }
+        int[] res = new int[numbers.size()];
+        for (int i = 0; i < numbers.size(); i++) {
+            res[i] = numbers.get(i);
+        }
+        return res;
     }
-    
+
     public String intArrayToString(int[] array) {
-    	String res = "[";
-    	for (int i = 0; i < array.length; i++) {
-    		res += String.valueOf(array[i]);
-    		if (i != array.length-1) {
-    			 res += ", ";
-			} else {
-				res += "]";
-			}
-    	}
-    	return res;
+        String res = "[";
+        for (int i = 0; i < array.length; i++) {
+            res += String.valueOf(array[i]);
+            if (i != array.length-1) {
+                res += ", ";
+            } else {
+                res += "]";
+            }
+        }
+        return res;
     }
-    
+
     public String parseBackgroundArraytoCFGList(String[] backgrounds) {
-    	String res = "{";//+System.lineSeparator();
-    	for (int i = 0; i < backgrounds.length; i++) {
-			res += "" + backgrounds[i];
-			if (i < backgrounds.length - 1) {
-				res += ", ";//+System.lineSeparator();
-			}
-		}
-    	res += "}";
-    	return res;
+        String res = "{";//+System.lineSeparator();
+        for (int i = 0; i < backgrounds.length; i++) {
+            res += "" + backgrounds[i];
+            if (i < backgrounds.length - 1) {
+                res += ", ";//+System.lineSeparator();
+            }
+        }
+        res += "}";
+        return res;
     }
 
     public String[] parseBackgroundCFGListToArray(String backgrounds) {
@@ -243,26 +244,26 @@ public class MinecraftDisplayer implements IDisplayer {
         }
         return res;
     }
-    
+
     public String randomBackground(String currentBG) {
         if (randomBackgroundArray.length == 1){
             return randomBackgroundArray[0];
         }
-    	//System.out.println("currentBG is: "+currentBG);
-    	Random rand = new Random();
-    	String res = randomBackgroundArray[rand.nextInt(randomBackgroundArray.length)];
+        //System.out.println("currentBG is: "+currentBG);
+        Random rand = new Random();
+        String res = randomBackgroundArray[rand.nextInt(randomBackgroundArray.length)];
         //System.out.println("New res is: "+res);
         //System.out.println("Does alreadyUsedBGs contain res?: "+String.valueOf(alreadyUsedBGs.contains(res)));
         if (randomBackgroundArray.length == alreadyUsedBGs.size()) {
             alreadyUsedBGs.clear();
         }
-    	while (res.equals(currentBG) || alreadyUsedBGs.contains(res)) {
-    		res = randomBackgroundArray[rand.nextInt(randomBackgroundArray.length)];
-    		//System.out.println("Rerolled res is: "+res);
-    	}
+        while (res.equals(currentBG) || alreadyUsedBGs.contains(res)) {
+            res = randomBackgroundArray[rand.nextInt(randomBackgroundArray.length)];
+            //System.out.println("Rerolled res is: "+res);
+        }
         alreadyUsedBGs.add(res);
-    	//System.out.println("res is: "+res);
-    	return res;
+        //System.out.println("res is: "+res);
+        return res;
     }
 
     public String randomTooltip(String currentTooltip) {
@@ -290,7 +291,7 @@ public class MinecraftDisplayer implements IDisplayer {
         BufferedReader reader = null;
         List<String> lines = new ArrayList<>();
         try {
-            reader = new BufferedReader(new FileReader(file));
+            reader = new BufferedReader((new InputStreamReader(new FileInputStream(file), "UTF-8")));//new BufferedReader(new FileReader(file));
             StringBuffer inputBuffer = new StringBuffer();
             String line;
             while ((line = reader.readLine()) != null) {
@@ -306,7 +307,10 @@ public class MinecraftDisplayer implements IDisplayer {
             reader.close();
 
             FileOutputStream fileOut = new FileOutputStream(file);
-            fileOut.write(inputBuffer.toString().getBytes());
+            PrintStream stream = new PrintStream(fileOut, true, "UTF-8");
+            /*fileOut.write(inputBuffer.toString().getBytes());
+            fileOut.close();*/
+            fileOut.write(inputBuffer.toString().getBytes("UTF-8"));
             fileOut.close();
         }
         catch (FileNotFoundException e) {
@@ -321,8 +325,9 @@ public class MinecraftDisplayer implements IDisplayer {
         if (!useCustomTips) {
             log.info("Not using custom tooltips");
             locale = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
-            if (locale.length() > 4) {
-                locale = locale.substring(0, 4);
+            //log.info("Using locale " + locale + "(0)");
+            if (locale.length() > 5) {
+                locale = locale.substring(0, 5);
             }
         } else {
             locale = customTipFilename;
@@ -349,6 +354,7 @@ public class MinecraftDisplayer implements IDisplayer {
             log.info("tips dir exists");
         }
         log.info("Current locale: "+locale);
+        //log.info("Using locale " + locale + "(1)");
         File dest = new File("./config/Betterloadingscreen/tips/" + locale + ".txt");
         log.info("dest set");
         OutputStream outStream = new FileOutputStream(dest);
@@ -362,19 +368,23 @@ public class MinecraftDisplayer implements IDisplayer {
         if (!useCustomTips) {
             log.info("Not using custom tooltips");
             locale = Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode();
-            if (locale.length() > 4) {
-                locale = locale.substring(0, 4);
+            log.info("Locale is: " + locale);
+            if (locale.length() > 5) {
+                log.info("locale before trimming: " + locale);
+                locale = locale.substring(0, 5);
             }
         } else {
             locale = customTipFilename;
             log.info("Using custom tooltips, name: " + locale);
         }
         //System.out.println("Language is: "+locale);
+        //log.info("Using locale " + locale + "(2)");
         File tipsCheck = new File("./config/Betterloadingscreen/tips/" + locale + ".txt");
         if (tipsCheck.exists()) {
             log.info("Tips file exists");
             try {
                 //System.out.println("hmm3");
+                //log.info("Using locale " + locale + "(3)");
                 randomTips = readTipsFile("./config/Betterloadingscreen/tips/" + locale + ".txt");
                 Random rand = new Random();
                 tip = randomTips[rand.nextInt(randomTips.length)];
@@ -402,10 +412,12 @@ public class MinecraftDisplayer implements IDisplayer {
         } else {
             //System.out.println("hmm6");
             try {
+                //log.info("Using locale " + locale + "(4)");
                 tipsCheck = new File("./config/Betterloadingscreen/tips/" + locale + ".txt");
                 //System.out.println("Checking if "+locale+".txt exists");
                 if (tipsCheck.exists()) {
                     //System.out.println("File exists");
+                    //log.info("Using locale " + locale + "(5)");
                     randomTips = readTipsFile("./config/Betterloadingscreen/" + locale + ".txt");
                 } else {
                     tipsCheck = new File("./config/Betterloadingscreen/tips/en_US.txt");
@@ -448,29 +460,28 @@ public class MinecraftDisplayer implements IDisplayer {
         String commentBruh = "bruh"+ "\n";
         String bruh = cfg.getString("bruhissimo", "general", "false", commentBruh);
         System.out.println("Brih is: "+bruh);*/
-        
-        String comment4 = "What sound to play when loading is complete. The default sound comes from a Matmos mod expansion" + n +
-        "Rhapsodia, created by Laurent Lozano";
+
+        String comment4 = "What sound to play when loading is complete. Default is the level up sound (" + defaultSound + ")";
         sound = cfg.getString("sound", "general", defaultSound, comment4);
 
         comment4 = "What font texture to use? Special Cases:"
                 + n +" - If you use the Russian mod \"Client Fixer\" then change this to \"textures/font/ascii_fat.png\"" + n +
                 "Note: if a resourcepack adds a font, it will be used by CLS.";
         fontTexture = cfg.getString("font", "general", defaultFontTexture, comment4);
-        
+
         String comment5 = "Path to background resource."+ n +"You can use a resourcepack"
-        		+ " or resource loader for custom resources.";
+                + " or resource loader for custom resources.";
         background = cfg.getString("background", "layout", background, comment5);
         String comment6 = "Path to logo/title resource";
         title = cfg.getString("title", "layout", title, comment6);
         String comment7 = "Logo coordinates in image and position."+ n +"the first four values indicate where the logo is located"
-        		+ " on the image (you could use a spritesheet), the four next ones tell where the image will be located on screen"
-        		+ n + "like this: [xLocation, yLocation, xWidth, yWidth, xLocation, yLocation, xWidth, yWidth]" + n + 
-        		"The same is used for other images, except the background, which is fullscreen. Please ALWAYS provide an image, a transparent one if you want even."+n+
-        		"CLS provides 'transparent.png'" + n +
-        		"If you really insist ping me and I'll look if I can add an image or so. jackowski626#0522";
+                + " on the image (you could use a spritesheet), the four next ones tell where the image will be located on screen"
+                + n + "like this: [xLocation, yLocation, xWidth, yWidth, xLocation, yLocation, xWidth, yWidth]" + n +
+                "The same is used for other images, except the background, which is fullscreen. Please ALWAYS provide an image, a transparent one if you want even."+n+
+                "CLS provides 'transparent.png'" + n +
+                "If you really insist ping me and I'll look if I can add an image or so. jackowski626#0522";
         titlePos = stringToIntArray(cfg.getString("titlePos", "layout", intArrayToString(titlePos), comment7));
-        
+
         //Main Loading Bar Static
         String comment8 = "Path to main loading bar resource";
         progress = cfg.getString("mainProgressBar", "layout", progress, comment8);
@@ -487,7 +498,7 @@ public class MinecraftDisplayer implements IDisplayer {
         //Main Loading Bar Percentage
         String comment13 = "Main loading bar percentage position";
         progressPercentagePos = stringToIntArray(cfg.getString("mainProgressBarPercentagePos", "layout", intArrayToString(progressPercentagePos), comment13));
-        
+
         //Material Loading Bar Static
         String comment14 = "Path to materials loading bar";
         GTprogress = cfg.getString("materialProgressBar", "layout", GTprogress, comment14);
@@ -516,21 +527,21 @@ public class MinecraftDisplayer implements IDisplayer {
         textShadow = cfg.getBoolean("textShadow", "layout", textShadow, comment20);
         String comment21 = "Color of text in hexadecimal format";
         textColor = cfg.getString("textColor", "layout", textColor, comment21);
-        
+
         //Stuff related to random backgrounds
         String comment22 = "Whether display a random background from the random backgrounds list";
         randomBackgrounds = cfg.getBoolean("randomBackgrounds", "layout", randomBackgrounds, comment22);
         String comment23 = "List of paths to backgrounds that will be used if randomBackgrounds is true."+ n +
-        		"The paths must be separated by commas."+ n;
+                "The paths must be separated by commas."+ n;
         randomBackgroundArray = parseBackgroundCFGListToArray((cfg.getString("backgroundList", "layout", parseBackgroundArraytoCFGList(randomBackgroundArray), comment23)));
-        
-        
+
+
         //Stuff related to blending
         String comment24 = "Whether backgrounds should change randomly during loading. They are taken from the random background list";
         blendingEnabled = cfg.getBoolean("backgroundChanging", "changing background", blendingEnabled, comment24);
         String comment25 = "Time in milliseconds between each image change (smooth blend)."+ n +
-        		"The animation runs on the main thread (because OpenGL bruh momento), so setting this higher than"+n+
-        		"default is not recommended (basically: if image transition running, your mods not loading)";
+                "The animation runs on the main thread (because OpenGL bruh momento), so setting this higher than"+n+
+                "default is not recommended (basically: if image transition running, your mods not loading)";
         threadSleepTime = cfg.getInt("threadSleepTime", "changing background", threadSleepTime, 0, 9000, comment25);
         /*
         NOBODY EXPECTS THE SPANISH INQUISITION!
@@ -538,11 +549,11 @@ public class MinecraftDisplayer implements IDisplayer {
         String comment26 = "Wach how many seconds the background should change";
         changeFrequency = cfg.getInt("changeFrequency", "changing background", changeFrequency, 1, 9000, comment26);
         String comment27 = "Float from 0 to 1. The amount of alpha that is removed from the original image and added to the image that comes after."+ n +
-        		"Also defined smoothnes of animation. Don't set this too low this time or you'll add time to your pack loading. Probably "+String.valueOf(alphaDecreaseStep)+" still is too low.";
+                "Also defined smoothnes of animation. Don't set this too low this time or you'll add time to your pack loading. Probably "+String.valueOf(alphaDecreaseStep)+" still is too low.";
         alphaDecreaseStep = cfg.getFloat("alphaDecreaseStep", "changing background", alphaDecreaseStep, 0, 1, comment27);
         String comment28 = "No, don't touch that!";
         shouldGLClear = cfg.getBoolean("shouldGLClear", "changing background", shouldGLClear, comment28);
-        
+
         //salt
         String comment29 = "If you want to save a maximum of time on your loading time but don't want to face a black screen, try this.";
         salt = cfg.getBoolean("salt", "skepticism", salt, comment29);
@@ -597,11 +608,11 @@ public class MinecraftDisplayer implements IDisplayer {
                 e.printStackTrace();
             }
         }*/
-        
+
         if (salt) {
-        	blendingEnabled = false;
+            blendingEnabled = false;
         }
-        
+
         // Add ourselves as a resource pack
         if (!preview) {
             if (!ProgressDisplayer.coreModLocation.isDirectory())
@@ -648,48 +659,48 @@ public class MinecraftDisplayer implements IDisplayer {
 
     @Override
     public void displayProgress(String text, float percent) {
-    	if (!salt) {
+        if (!salt) {
             /*if (tipsEnabled && ((!isRegisteringBartWorks && !isRegisteringGTmaterials && !isReplacingVanillaMaterials && tipCounter > tipsChangeFrequency) || ((isRegisteringBartWorks || isRegisteringGTmaterials || isReplacingVanillaMaterials) && tipCounter > tipsChangeFrequency*secondBarToolTipMultiplier))) {
                 tipCounter = 0;
                 tip = randomTooltip(tip);
             }*/
-	    	if (alexiil.mods.load.MinecraftDisplayer.isRegisteringGTmaterials || isReplacingVanillaMaterials || isRegisteringBartWorks) {
-	    		if (!tipsEnabled) {
+            if (alexiil.mods.load.MinecraftDisplayer.isRegisteringGTmaterials || isReplacingVanillaMaterials || isRegisteringBartWorks) {
+                if (!tipsEnabled) {
                     images = new ImageRender[11];
                     nonStaticElementsToGo = 10;
                 } else {
                     images = new ImageRender[12];
                     nonStaticElementsToGo = 11;
                 }
-	    		//background
-	    		if (!background.equals("")) {
-	    			images[0] = new ImageRender(background, EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 0, 0));
-				} else {
+                //background
+                if (!background.equals("")) {
+                    images[0] = new ImageRender(background, EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 0, 0));
+                } else {
                     images[0] = new ImageRender("betterloadingscreen:textures/transparent.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 10, 10));
                 }
-	    		//Logo
-	    		if (!title.equals("")) {
-					images[1] = new ImageRender(title, EPosition.CENTER, EType.STATIC, new Area(titlePos[0], titlePos[1], titlePos[2], titlePos[3]), new Area(titlePos[4], titlePos[5], titlePos[6], titlePos[7]));
-				} else {
-					images[1] = new ImageRender("betterloadingscreen:textures/transparent.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 10, 10));
-				}
-	    		//GT progress text
-	            images[2] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_STATUS, null, new Area(GTprogressTextPos[0], GTprogressTextPos[1], 0, 0), "ffffff", null, "");
+                //Logo
+                if (!title.equals("")) {
+                    images[1] = new ImageRender(title, EPosition.CENTER, EType.STATIC, new Area(titlePos[0], titlePos[1], titlePos[2], titlePos[3]), new Area(titlePos[4], titlePos[5], titlePos[6], titlePos[7]));
+                } else {
+                    images[1] = new ImageRender("betterloadingscreen:textures/transparent.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 10, 10));
+                }
+                //GT progress text
+                images[2] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_STATUS, null, new Area(GTprogressTextPos[0], GTprogressTextPos[1], 0, 0), "ffffff", null, "");
                 //GT progress percentage text
-	    		images[3] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(GTprogressPercentagePos[0], GTprogressPercentagePos[1], 0, 0), "ffffff", null, "");
-	            //Static NORMAL bar image
-	            images[4] = new ImageRender(progress, EPosition.CENTER, EType.STATIC, new Area(progressPos[0], progressPos[1], progressPos[2], progressPos[3]), new Area(progressPos[4], progressPos[5], progressPos[6], progressPos[7]));
-	            //Dynamic NORMAL bar image (yellow thing)
-	            images[5] = new ImageRender(progress, EPosition.CENTER, EType.DYNAMIC_PERCENTAGE, new Area(progressPosAnimated[0], progressPosAnimated[1], progressPosAnimated[2], progressPosAnimated[3]), new Area(progressPosAnimated[4], progressPosAnimated[5], progressPosAnimated[6], progressPosAnimated[7]));
-	            //NORMAL progress text
-	            images[6] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_STATUS, null, new Area(progressTextPos[0], progressTextPos[1], 0, 0), "ffffff", null, "");
-	            //NORMAL progress percentage text
-	            images[7] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
-	            //Static GT bar image
-	            images[8] = new ImageRender(GTprogress, EPosition.CENTER, EType.STATIC, new Area(GTprogressPos[0], GTprogressPos[1], GTprogressPos[2], GTprogressPos[3]), new Area(GTprogressPos[4], GTprogressPos[5], GTprogressPos[6], GTprogressPos[7]));
+                images[3] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(GTprogressPercentagePos[0], GTprogressPercentagePos[1], 0, 0), "ffffff", null, "");
+                //Static NORMAL bar image
+                images[4] = new ImageRender(progress, EPosition.CENTER, EType.STATIC, new Area(progressPos[0], progressPos[1], progressPos[2], progressPos[3]), new Area(progressPos[4], progressPos[5], progressPos[6], progressPos[7]));
+                //Dynamic NORMAL bar image (yellow thing)
+                images[5] = new ImageRender(progress, EPosition.CENTER, EType.DYNAMIC_PERCENTAGE, new Area(progressPosAnimated[0], progressPosAnimated[1], progressPosAnimated[2], progressPosAnimated[3]), new Area(progressPosAnimated[4], progressPosAnimated[5], progressPosAnimated[6], progressPosAnimated[7]));
+                //NORMAL progress text
+                images[6] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_STATUS, null, new Area(progressTextPos[0], progressTextPos[1], 0, 0), "ffffff", null, "");
+                //NORMAL progress percentage text
+                images[7] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
+                //Static GT bar image
+                images[8] = new ImageRender(GTprogress, EPosition.CENTER, EType.STATIC, new Area(GTprogressPos[0], GTprogressPos[1], GTprogressPos[2], GTprogressPos[3]), new Area(GTprogressPos[4], GTprogressPos[5], GTprogressPos[6], GTprogressPos[7]));
                 //Dynamic GT bar image (yellow thing)
-	            images[9] = new ImageRender(GTprogress, EPosition.CENTER, EType.DYNAMIC_PERCENTAGE, new Area(GTprogressPosAnimated[0], GTprogressPosAnimated[1], GTprogressPosAnimated[2], GTprogressPosAnimated[3]), new Area(GTprogressPosAnimated[4], GTprogressPosAnimated[5], GTprogressPosAnimated[6], GTprogressPosAnimated[7]));
-	            ///
+                images[9] = new ImageRender(GTprogress, EPosition.CENTER, EType.DYNAMIC_PERCENTAGE, new Area(GTprogressPosAnimated[0], GTprogressPosAnimated[1], GTprogressPosAnimated[2], GTprogressPosAnimated[3]), new Area(GTprogressPosAnimated[4], GTprogressPosAnimated[5], GTprogressPosAnimated[6], GTprogressPosAnimated[7]));
+                ///
                 if (!tipsEnabled) {
                     //Hmmm no idea what that is, maybe the thing that clears the screen
                     images[10] = new ImageRender(null, null, EType.CLEAR_COLOUR, null, null, "ffffff", null, "");
@@ -699,8 +710,8 @@ public class MinecraftDisplayer implements IDisplayer {
                     //Hmmm no idea what that is, maybe the thing that clears the screen
                     images[11] = new ImageRender(null, null, EType.CLEAR_COLOUR, null, null, "ffffff", null, "");
                 }
-	            //
-			}	else {
+                //
+            }	else {
                 if (!tipsEnabled) {
                     images = new ImageRender[7];
                     nonStaticElementsToGo = 6;
@@ -709,78 +720,78 @@ public class MinecraftDisplayer implements IDisplayer {
                     nonStaticElementsToGo = 7;
                 }
                 //background
-				if (!background.equals("")) {
-	    			images[0] = new ImageRender(background, EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 0, 0));
-				} else {
-					images[0] = new ImageRender("betterloadingscreen:textures/transparent.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 10, 10));
-				}
-				//Logo
-				if (!title.equals("")) {
-					images[1] = new ImageRender(title, EPosition.CENTER, EType.STATIC, new Area(titlePos[0], titlePos[1], titlePos[2], titlePos[3]), new Area(titlePos[4], titlePos[5], titlePos[6], titlePos[7]));
-				} else {
-					images[1] = new ImageRender("betterloadingscreen:textures/transparent.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 10, 10));
-				}
+                if (!background.equals("")) {
+                    images[0] = new ImageRender(background, EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 0, 0));
+                } else {
+                    images[0] = new ImageRender("betterloadingscreen:textures/transparent.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 10, 10));
+                }
+                //Logo
+                if (!title.equals("")) {
+                    images[1] = new ImageRender(title, EPosition.CENTER, EType.STATIC, new Area(titlePos[0], titlePos[1], titlePos[2], titlePos[3]), new Area(titlePos[4], titlePos[5], titlePos[6], titlePos[7]));
+                } else {
+                    images[1] = new ImageRender("betterloadingscreen:textures/transparent.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 10, 10));
+                }
                 //NORMAL progress text
-	            images[2] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_STATUS, null, new Area(progressTextPos[0], progressTextPos[1], 0, 0), "ffffff", null, "");
+                images[2] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_STATUS, null, new Area(progressTextPos[0], progressTextPos[1], 0, 0), "ffffff", null, "");
                 //NORMAL progress percentage text
-				images[3] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
+                images[3] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
                 //Static NORMAL bar image
-	            images[4] = new ImageRender(progress, EPosition.CENTER, EType.STATIC, new Area(progressPos[0], progressPos[1], progressPos[2], progressPos[3]), new Area(progressPos[4], progressPos[5], progressPos[6], progressPos[7]));
+                images[4] = new ImageRender(progress, EPosition.CENTER, EType.STATIC, new Area(progressPos[0], progressPos[1], progressPos[2], progressPos[3]), new Area(progressPos[4], progressPos[5], progressPos[6], progressPos[7]));
                 //Dynamic NORMAL bar image (yellow thing)
-	            images[5] = new ImageRender(progress, EPosition.CENTER, EType.DYNAMIC_PERCENTAGE, new Area(progressPosAnimated[0], progressPosAnimated[1], progressPosAnimated[2], progressPosAnimated[3]), new Area(progressPosAnimated[4], progressPosAnimated[5], progressPosAnimated[6], progressPosAnimated[7]));
+                images[5] = new ImageRender(progress, EPosition.CENTER, EType.DYNAMIC_PERCENTAGE, new Area(progressPosAnimated[0], progressPosAnimated[1], progressPosAnimated[2], progressPosAnimated[3]), new Area(progressPosAnimated[4], progressPosAnimated[5], progressPosAnimated[6], progressPosAnimated[7]));
                 if (!tipsEnabled) {
                     images[6] = new ImageRender(null, null, EType.CLEAR_COLOUR, null, null, "ffffff", null, "");
                 } else {
                     images[6] = new ImageRender(fontTexture, EPosition.valueOf(baseTipsTextPos), EType.TIPS_TEXT, null, new Area(tipsTextPos[0], tipsTextPos[1], 0, 0), tipsColor, tip, "");
                     images[7] = new ImageRender(null, null, EType.CLEAR_COLOUR, null, null, "ffffff", null, "");
                 }
-	    	}
-    	} else {
-    		shouldGLClear = false;
-    		textShadow = false;
-    		textColor = "000000";
-    		if (!saltBGhasBeenRendered) {
-    			images = new ImageRender[2];
-    			images[0] = new ImageRender("betterloadingscreen:textures/salt.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 0, 0));
-    			images[1] = new ImageRender(fontTexture, EPosition.BOTTOM_LEFT, EType.DYNAMIC_TEXT_STATUS, null, new Area(10, 10, 0, 0), "000000", null, "");
-			} else {
-				images = new ImageRender[0];
-			}
-    	}
-    	
+            }
+        } else {
+            shouldGLClear = false;
+            textShadow = false;
+            textColor = "000000";
+            if (!saltBGhasBeenRendered) {
+                images = new ImageRender[2];
+                images[0] = new ImageRender("betterloadingscreen:textures/salt.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 0, 0));
+                images[1] = new ImageRender(fontTexture, EPosition.BOTTOM_LEFT, EType.DYNAMIC_TEXT_STATUS, null, new Area(10, 10, 0, 0), "000000", null, "");
+            } else {
+                images = new ImageRender[0];
+            }
+        }
+
         resolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 
         preDisplayScreen();
-        
+
         int imageCounter = 0;
-        
+
         if (!isRegisteringGTmaterials && !isReplacingVanillaMaterials && !isRegisteringBartWorks) {
-			lastPercent = percent;
-		}
-        
+            lastPercent = percent;
+        }
+
         for (ImageRender image : images) {
 //        	if (!usingGT) {
 //				lastPercent = percent;
 //			}
-        	if (salt) {
-        		drawImageRender(image, "Minecraft is loading, please wait...", percent);
-			} else if (image != null && !((isRegisteringGTmaterials || isReplacingVanillaMaterials || isRegisteringBartWorks) && imageCounter > 4 && (isRegisteringGTmaterials || isReplacingVanillaMaterials || isRegisteringBartWorks) && imageCounter < 9)) {
+            if (salt) {
+                drawImageRender(image, "Minecraft is loading, please wait...", percent);
+            } else if (image != null && !((isRegisteringGTmaterials || isReplacingVanillaMaterials || isRegisteringBartWorks) && imageCounter > 4 && (isRegisteringGTmaterials || isReplacingVanillaMaterials || isRegisteringBartWorks) && imageCounter < 9)) {
                 drawImageRender(image, text, percent);
             } else if (image != null && isRegisteringGTmaterials && !isNice) {
-            	drawImageRender(image," Post Initialization: Registering Gregtech materials", lastPercent);
-            	
-			} else if (image != null && isRegisteringGTmaterials && isNice) {
-            	drawImageRender(image," Post Initialization: Registering nice Gregtech materials", lastPercent);
-            	if(!hasSaidNice) {
-            		hasSaidNice = true;
-            		log = LogManager.getLogger("betterloadingscreen");
-            		log.info("Yeah, that's nice, funni number");
-            	}
-			} else if (isReplacingVanillaMaterials) {
-				drawImageRender(image," Post Initialization: Gregtech replacing Vanilla materials in recipes", lastPercent);
-			} else if (isRegisteringBartWorks) {
-				drawImageRender(image," Post Initialization: Registering BartWorks materials", lastPercent);
-			}
+                drawImageRender(image," Post Initialization: Registering Gregtech materials", lastPercent);
+
+            } else if (image != null && isRegisteringGTmaterials && isNice) {
+                drawImageRender(image," Post Initialization: Registering nice Gregtech materials", lastPercent);
+                if(!hasSaidNice) {
+                    hasSaidNice = true;
+                    log = LogManager.getLogger("betterloadingscreen");
+                    log.info("Yeah, that's nice, funni number");
+                }
+            } else if (isReplacingVanillaMaterials) {
+                drawImageRender(image," Post Initialization: Gregtech replacing Vanilla materials in recipes", lastPercent);
+            } else if (isRegisteringBartWorks) {
+                drawImageRender(image," Post Initialization: Registering BartWorks materials", lastPercent);
+            }
             imageCounter++;
         }
 
@@ -836,10 +847,10 @@ public class MinecraftDisplayer implements IDisplayer {
                 startX = render.positionType.transformX(render.position.x, resolution.getScaledWidth() - width);
                 startY = render.positionType.transformY(render.position.y, resolution.getScaledHeight() - font.FONT_HEIGHT);
                 if (textShadow) {
-                	font.drawStringWithShadow(percentage, startX, startY, /*render.getColour()*/intColor);
-				} else {
-					drawString(font, percentage, startX, startY, intColor);
-				}
+                    font.drawStringWithShadow(percentage, startX, startY, /*render.getColour()*/intColor);
+                } else {
+                    drawString(font, percentage, startX, startY, intColor);
+                }
                 break;
             }
             case DYNAMIC_TEXT_STATUS: {
@@ -878,11 +889,11 @@ public class MinecraftDisplayer implements IDisplayer {
                 int startX1 = render.positionType.transformX(render.position.x, resolution.getScaledWidth() - width);
                 int startY1 = render.positionType.transformY(render.position.y, resolution.getScaledHeight() - font.FONT_HEIGHT);
                 if (textShadow) {
-                	font.drawStringWithShadow(render.text, startX1, startY1, intColor);
-				} else {
-					drawString(font, render.text, startX1, startY1, intColor);
-				}
-				break;
+                    font.drawStringWithShadow(render.text, startX1, startY1, intColor);
+                } else {
+                    drawString(font, render.text, startX1, startY1, intColor);
+                }
+                break;
             }
             case TIPS_TEXT: {
                 FontRenderer font = fontRenderer(render.resourceLocation);
@@ -898,43 +909,43 @@ public class MinecraftDisplayer implements IDisplayer {
                 break;
             }
             case STATIC: {
-            	if (blending) {
-            		preDisplayScreen();
-            		GL11.glClearColor(clearRed, clearGreen, clearBlue, 1);
-            		//GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-            		if (blendingJustSet) {
-            			blendingJustSet = false;
-            		    //System.out.println("start blend");
-            			Random rand = new Random();
-            			newBlendImage = randomBackground(render.resourceLocation);//randomBackgroundArray[rand.nextInt(randomBackgroundArray.length)];
-            		}
-            		
-            		GL11.glColor4f(render.getRed(), render.getGreen(), render.getBlue(), blendAlpha);//+0.1F);
-            		
-            		blendAlpha -= alphaDecreaseStep;
-            		//System.out.println("blendAlpha: "+blendAlpha);
-            		if (blendAlpha <= 0) {
-						blending = false;
-						background = newBlendImage;
-					}
-            		try {
-						Thread.sleep(threadSleepTime);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-            		
-            		ResourceLocation res = new ResourceLocation(render.resourceLocation);
+                if (blending) {
+                    preDisplayScreen();
+                    GL11.glClearColor(clearRed, clearGreen, clearBlue, 1);
+                    //GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+                    if (blendingJustSet) {
+                        blendingJustSet = false;
+                        //System.out.println("start blend");
+                        Random rand = new Random();
+                        newBlendImage = randomBackground(render.resourceLocation);//randomBackgroundArray[rand.nextInt(randomBackgroundArray.length)];
+                    }
+
+                    GL11.glColor4f(render.getRed(), render.getGreen(), render.getBlue(), blendAlpha);//+0.1F);
+
+                    blendAlpha -= alphaDecreaseStep;
+                    //System.out.println("blendAlpha: "+blendAlpha);
+                    if (blendAlpha <= 0) {
+                        blending = false;
+                        background = newBlendImage;
+                    }
+                    try {
+                        Thread.sleep(threadSleepTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    ResourceLocation res = new ResourceLocation(render.resourceLocation);
                     textureManager.bindTexture(res);
                     drawRect(startX, startY, PWidth, PHeight, render.texture.x, render.texture.y, render.texture.width, render.texture.height);
                     //drawImageRender(render, text, percent);
-                    
+
                     ImageRender render2 = new ImageRender(newBlendImage, EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 256, 256));
                     GL11.glColor4f(render2.getRed(), render2.getGreen(), render2.getBlue(), 1-blendAlpha-0.05F);//+0.01F);
                     ResourceLocation res2 = new ResourceLocation(render2.resourceLocation);
                     textureManager.bindTexture(res2);
                     drawRect(startX, startY, PWidth, PHeight, render2.texture.x, render2.texture.y, render2.texture.width, render2.texture.height);
                     //drawImageRender(render2, text, percent);
-                    
+
                     //Rest of the images
 
                     //loading bar static
@@ -1027,13 +1038,13 @@ public class MinecraftDisplayer implements IDisplayer {
                         } else {
                             font.drawStringWithShadow(percentage, startX, startY, /*render.getColour()*/intColor);
                         }
-    				} else {
+                    } else {
                         if (false/*isRegisteringGTmaterials || isReplacingVanillaMaterials || isRegisteringBartWorks*/) {
                             drawString(font, String.valueOf((int)lastPercent*100), startX, startY, intColor);
                         } else {
                             drawString(font, percentage, startX, startY, intColor);
                         }
-    				}
+                    }
                     ///////////
                     //GT
                     if (isRegisteringGTmaterials || isReplacingVanillaMaterials || isRegisteringBartWorks) {
@@ -1116,20 +1127,20 @@ public class MinecraftDisplayer implements IDisplayer {
                     //
                     postDisplayScreen();
                     drawImageRender(render, text, percent);
-            		break;
-            	} else {
-            		if (!newBlendImage.contentEquals("none")) {
-						
-						render = new ImageRender(newBlendImage, EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 256, 256));
-						newBlendImage = "none";
-            		}
-            		GL11.glColor4f(render.getRed(), render.getGreen(), render.getBlue(), 1F);
-            		ResourceLocation res = new ResourceLocation(render.resourceLocation);
+                    break;
+                } else {
+                    if (!newBlendImage.contentEquals("none")) {
+
+                        render = new ImageRender(newBlendImage, EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 256, 256));
+                        newBlendImage = "none";
+                    }
+                    GL11.glColor4f(render.getRed(), render.getGreen(), render.getBlue(), 1F);
+                    ResourceLocation res = new ResourceLocation(render.resourceLocation);
                     textureManager.bindTexture(res);
                     drawRect(startX, startY, PWidth, PHeight, render.texture.x, render.texture.y, render.texture.width, render.texture.height);
                     break;
-            	}
-                
+                }
+
                 //break;
             }
             case CLEAR_COLOUR:// Ignore this, as its set elsewhere
@@ -1154,8 +1165,8 @@ public class MinecraftDisplayer implements IDisplayer {
     }
 
     private void preDisplayScreen() {
-    	//System.out.println("Called preDisplayScreen");
-    	//bruh
+        //System.out.println("Called preDisplayScreen");
+        //bruh
         if (textureManager == null) {
             if (preview) {
                 textureManager = mc.renderEngine;
@@ -1195,8 +1206,8 @@ public class MinecraftDisplayer implements IDisplayer {
         GL11.glClearColor(clearRed, clearGreen, clearBlue, 1);
         //EXPERIMENTAL!! - DISABLING THE WHITE CLEAT - EXPERIMENTAL!!!!
         if (shouldGLClear) {
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);	
-		}
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+        }
 
         GL11.glEnable(GL11.GL_BLEND);
         //GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -1208,7 +1219,7 @@ public class MinecraftDisplayer implements IDisplayer {
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
 
         GL11.glColor4f(1, 1, 1, 1);
-        
+
         //System.out.println("alpha: "+GL11.GL_ALPHA);
         //GL11.GL_ALPHA = 1000;
     }

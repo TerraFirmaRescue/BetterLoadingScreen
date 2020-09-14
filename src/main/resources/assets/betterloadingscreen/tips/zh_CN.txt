@@ -2,4 +2,4 @@
 #The line below, including the "#" are 77 chars
 #Adventurer's backpack? Did you mean integrated crafting grid, bed and fluid
 #
-Infinite water sources are disabled
+无限水被禁止了
