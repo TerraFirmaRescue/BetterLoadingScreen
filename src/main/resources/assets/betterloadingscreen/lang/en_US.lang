@@ -1,10 +1,10 @@
-betterloadingscreen.state.minecraft_init=Minecraft Initializing
-betterloadingscreen.state.construction=Construction
-betterloadingscreen.state.pre_initialization=Pre Initialization
-betterloadingscreen.state.initialization=Initialization
-betterloadingscreen.state.post_initialization=Post Initialization
-betterloadingscreen.state.completed=Completed
-betterloadingscreen.state.reloading_resource_packs=Reloading Resource Packs
+betterloadingscreen.state.minecraft_init=Reaching Terrafirma Solar System
+betterloadingscreen.state.construction=Entering Duck Egg's Orbit
+betterloadingscreen.state.pre_initialization=Decelerating near Terrafirma
+betterloadingscreen.state.initialization=Entering Low Terrafirma Orbit
+betterloadingscreen.state.post_initialization=Escape Shuttle Launched
+betterloadingscreen.state.completed=Escape Shuttle Atmospheric Breaking
+betterloadingscreen.state.reloading_resource_packs=Escape Shuttle Reaches Terrafirma Surface
 betterloadingscreen.loading=loading
 
 alexiillib.gui.contributors=Contributors

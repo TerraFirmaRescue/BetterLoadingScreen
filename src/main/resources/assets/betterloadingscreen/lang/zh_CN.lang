@@ -1,10 +1,10 @@
-betterloadingscreen.state.minecraft_init=Minecraft初始化
-betterloadingscreen.state.construction=构建
-betterloadingscreen.state.pre_initialization=预初始化
-betterloadingscreen.state.initialization=初始化
-betterloadingscreen.state.post_initialization=后初始化
-betterloadingscreen.state.completed=已完成
-betterloadingscreen.state.reloading_resource_packs=重新加载资源包
+betterloadingscreen.state.minecraft_init=正在进入群峦行星系
+betterloadingscreen.state.construction=正在泊入鸭蛋星轨道
+betterloadingscreen.state.pre_initialization=正在减速接近群峦星
+betterloadingscreen.state.initialization=正在泊入群峦星低轨道
+betterloadingscreen.state.post_initialization=逃生梭已释放
+betterloadingscreen.state.completed=逃生梭正在进行大气减速
+betterloadingscreen.state.reloading_resource_packs=逃生梭已抵达群峦星地表
 betterloadingscreen.loading=加载中
 
 alexiillib.gui.contributors=参与者
