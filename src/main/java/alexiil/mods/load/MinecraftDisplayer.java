@@ -315,7 +315,7 @@ public class MinecraftDisplayer implements IDisplayer {
         }
         catch (FileNotFoundException e) {
             log.warn("Error while opening tips file");
-            return new String[] {"Failed to load tips! If you didn't do anything, yell at jackowski626#0522"};
+            return new String[] {"Failed to load tips! If you didn't do anything, contact https://forum.teammoeg.com/t/bug-help"};
         }
         return lines.toArray(new String[0]);
     }

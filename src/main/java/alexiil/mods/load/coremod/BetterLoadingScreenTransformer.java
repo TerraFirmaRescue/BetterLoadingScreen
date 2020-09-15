@@ -27,8 +27,8 @@ public class BetterLoadingScreenTransformer implements IClassTransformer, Opcode
                 return transformMinecraft(basicClass);
             if (name.equals("com.mumfrey.liteloader.client.api.ObjectFactoryClient"))
                 return transformObjectFactoryClient(basicClass);
-            if (name.equals("lumien.resourceloader.ResourceLoader"))
-                return transformResourceLoader(basicClass);
+//            if (name.equals("lumien.resourceloader.ResourceLoader"))
+//                return transformResourceLoader(basicClass);
         }
         catch (Throwable t) {
             System.out.println("An issue occoured while transforming " + transformedName);
