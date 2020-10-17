@@ -63,15 +63,15 @@ public class MinecraftDisplayer implements IDisplayer {
     private String progressAnimated = "betterloadingscreen:textures/mainProgressBar.png";
     private String title = "betterloadingscreen:textures/transparent.png";
     private String background = "betterloadingscreen:textures/backgrounds/background1.png";
-    private int[] titlePos = new int[] {0, 0, 256, 256, 0, 50, 187, 145};
+    private int[] titlePos = new int[] {0, 0, 256, 256, 0, 40, 128, 128};
     /*private int[] GTprogressPos = new int[] {0, 0, 172, 12, 0, -83, 172, 6};
     private int[] GTprogressPosAnimated = new int[] {0, 12, 172, 12, 0, -83, 172, 6};*/
     private int[] GTprogressPos = new int[] {0, 0, 194, 24, 0, -83, 188, 12};
     private int[] GTprogressPosAnimated = new int[] {0, 24, 194, 24, 0, -83, 188, 12};
-    private int[] progressPos = new int[] {0, 0, 194, 24, 0, -50, 194, 16};
-    private int[] progressPosAnimated = new int[] {0, 24, 194, 24, 0, -50, 194, 16};
-    private int[] progressTextPos = new int[] {0, -30};
-    private int[] progressPercentagePos = new int[] {0, -40};
+    private int[] progressPos = new int[] {0, 5, 7, 10, 0, 0, 0, 70};
+    private int[] progressPosAnimated = new int[] {0, 0, 7, 5, 0, 70, 0, 5};
+    private int[] progressTextPos = new int[] {10, 80};
+    private int[] progressPercentagePos = new int[] {10, 80};
     private int[] GTprogressTextPos = new int[] {0, -65};
     private int[] GTprogressPercentagePos = new int[] {0, -75};
     private int[] tipsTextPos = new int[] {0, 5};
@@ -87,17 +87,17 @@ public class MinecraftDisplayer implements IDisplayer {
     private static String customTipFilename = "en_US";
     private boolean textShadow = true;
     private String textColor = "ffffff";
-    private boolean randomBackgrounds  = true;
-    public static String[] randomBackgroundArray = new String[] {"betterloadingscreen:textures/backgrounds/background1.png", "betterloadingscreen:textures/backgrounds/background2.png", "betterloadingscreen:textures/backgrounds/background3.png", "betterloadingscreen:textures/backgrounds/background4.png", "betterloadingscreen:textures/backgrounds/background5.png","betterloadingscreen:textures/backgrounds/background6.png", "betterloadingscreen:textures/backgrounds/background7.png", "betterloadingscreen:textures/backgrounds/background8.png", "betterloadingscreen:textures/backgrounds/background9.png", "betterloadingscreen:textures/backgrounds/background10.png", "betterloadingscreen:textures/backgrounds/background11.png", "betterloadingscreen:textures/backgrounds/background12.png","betterloadingscreen:textures/backgrounds/background13.png"};
+    private boolean randomBackgrounds  = false;
+    public static String[] randomBackgroundArray = new String[] {"betterloadingscreen:textures/backgrounds/background1.png"};
     private boolean blendingEnabled = true;
     private int threadSleepTime = 20;
     private int changeFrequency = 40;
     private float alphaDecreaseStep = 0.01F;
     private boolean shouldGLClear = false;
     private boolean salt = false;
-    private String loadingBarsColor = "fdf900";
+    private String loadingBarsColor = "54e0d7";
     private float[] lbRGB = new float[] {1, 1, 0};
-    private float loadingBarsAlpha = 0.5F;
+    private float loadingBarsAlpha = 0.9F;
     private boolean useImgur = true;
     public static String imgurGalleryLink = "https://imgur.com/gallery/Ks0TrYE";
 
@@ -732,13 +732,13 @@ public class MinecraftDisplayer implements IDisplayer {
                     images[1] = new ImageRender("betterloadingscreen:textures/transparent.png", EPosition.TOP_LEFT, EType.STATIC, new Area(0, 0, 256, 256), new Area(0, 0, 10, 10));
                 }
                 //NORMAL progress text
-                images[2] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_STATUS, null, new Area(progressTextPos[0], progressTextPos[1], 0, 0), "ffffff", null, "");
+                images[2] = new ImageRender(fontTexture, EPosition.BOTTOM_LEFT, EType.DYNAMIC_TEXT_STATUS, null, new Area(progressTextPos[0], progressTextPos[1], 0, 0), "ffffff", null, "");
                 //NORMAL progress percentage text
-                images[3] = new ImageRender(fontTexture, EPosition.CENTER, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
+                images[3] = new ImageRender(fontTexture, EPosition.BOTTOM_RIGHT, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
                 //Static NORMAL bar image
-                images[4] = new ImageRender(progress, EPosition.CENTER, EType.STATIC, new Area(progressPos[0], progressPos[1], progressPos[2], progressPos[3]), new Area(progressPos[4], progressPos[5], progressPos[6], progressPos[7]));
+                images[4] = new ImageRender(progress, EPosition.BOTTOM_CENTER, EType.ALPHA_STATIC, new Area(progressPos[0], progressPos[1], progressPos[2], progressPos[3]), new Area(progressPos[4], progressPos[5], progressPos[6], progressPos[7]));
                 //Dynamic NORMAL bar image (yellow thing)
-                images[5] = new ImageRender(progress, EPosition.CENTER, EType.DYNAMIC_PERCENTAGE, new Area(progressPosAnimated[0], progressPosAnimated[1], progressPosAnimated[2], progressPosAnimated[3]), new Area(progressPosAnimated[4], progressPosAnimated[5], progressPosAnimated[6], progressPosAnimated[7]));
+                images[5] = new ImageRender(progress, EPosition.BOTTOM_CENTER, EType.DYNAMIC_PERCENTAGE, new Area(progressPosAnimated[0], progressPosAnimated[1], progressPosAnimated[2], progressPosAnimated[3]), new Area(progressPosAnimated[4], progressPosAnimated[5], progressPosAnimated[6], progressPosAnimated[7]));
                 if (!tipsEnabled) {
                     images[6] = new ImageRender(null, null, EType.CLEAR_COLOUR, null, null, "ffffff", null, "");
                 } else {
@@ -830,6 +830,28 @@ public class MinecraftDisplayer implements IDisplayer {
         }
         GL11.glColor4f(render.getRed(), render.getGreen(), render.getBlue(), 1);
         switch (render.type) {
+            case ALPHA_STATIC: {
+                ImageRender render3 = new ImageRender(images[4].resourceLocation, images[4].positionType, images[4].type, images[4].texture, images[4].position);
+
+                startX = progressPos[0];//render3.transformX(resolution.getScaledWidth());
+                startY = progressPos[1];//render3.transformY(resolution.getScaledHeight());
+                ResourceLocation res3 = new ResourceLocation(images[4].resourceLocation);
+                textureManager.bindTexture(res3);
+                startX = render3.transformX(resolution.getScaledWidth());
+                startY = render3.transformY(resolution.getScaledHeight());
+                PWidth = 0;
+                PHeight = 0;
+                if (render.position != null) {
+                    PWidth = render3.position.width == 0 ? resolution.getScaledWidth() : render3.position.width;
+                    PHeight = render3.position.height == 0 ? resolution.getScaledHeight() : render3.position.height;
+                }
+
+                GL11.glColor4f(0F, 0F, 0F, 0.5F);
+                drawRect(startX, startY, PWidth, PHeight, render3.texture.x, render3.texture.y, render3.texture.width, render3.texture.height);
+                GL11.glColor4f(1, 1, 1, 1);
+
+                break;
+            }
             case DYNAMIC_PERCENTAGE: {
                 ResourceLocation res = new ResourceLocation(render.resourceLocation);
                 textureManager.bindTexture(res);
