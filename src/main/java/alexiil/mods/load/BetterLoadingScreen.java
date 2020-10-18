@@ -13,6 +13,7 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundEventAccessorComposite;
 import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.gui.GuiDownloadTerrain;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiWinGame;
 import net.minecraft.util.ResourceLocation;
@@ -63,6 +64,8 @@ public class BetterLoadingScreen {
 
     private static Logger log = LogManager.getLogger("betterloadingscreen");
     private static String defaultSound = "betterloadingscreen:rhapsodia_orb";
+    private static String downloadTerrainMusic = "betterloadingscreen:music";
+
 //    private YMusicTicker yMusicTicker;
 
     @EventHandler
@@ -132,12 +135,12 @@ public class BetterLoadingScreen {
     public void guiOpen(GuiOpenEvent event) throws IOException {
         if (event.gui != null && event.gui instanceof GuiMainMenu)
             ProgressDisplayer.close();
-//        if (event.gui != null && event.gui instanceof GuiCreateWorld)
+//        if (event.gui != null && event.gui instanceof GuiDownloadTerrain)
 //            new Thread() {
 //                @Override
 //                public void run() {
-//                    try { Thread.sleep(1000); } catch (InterruptedException e) {}
-//                    playSound(defaultSound);
+//                    try { Thread.sleep(10); } catch (InterruptedException e) {}
+//                    playSound(downloadTerrainMusic);
 //                }
 //        }.start();
     }

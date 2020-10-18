@@ -8,6 +8,7 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
+@Deprecated
 public class YSoundHandler
 {
     private ISound iSound;

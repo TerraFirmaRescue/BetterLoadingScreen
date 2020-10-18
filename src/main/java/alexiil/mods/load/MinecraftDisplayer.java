@@ -68,10 +68,10 @@ public class MinecraftDisplayer implements IDisplayer {
     private int[] GTprogressPosAnimated = new int[] {0, 12, 172, 12, 0, -83, 172, 6};*/
     private int[] GTprogressPos = new int[] {0, 0, 194, 24, 0, -83, 188, 12};
     private int[] GTprogressPosAnimated = new int[] {0, 24, 194, 24, 0, -83, 188, 12};
-    private int[] progressPos = new int[] {0, 5, 7, 10, 0, 0, 0, 70};
-    private int[] progressPosAnimated = new int[] {0, 0, 7, 5, 0, 70, 0, 5};
-    private int[] progressTextPos = new int[] {10, 77};
-    private int[] progressPercentagePos = new int[] {0, 57};
+    private int[] progressPos = new int[] {0, 5, 7, 10, 0, 0, 0, 50};
+    private int[] progressPosAnimated = new int[] {0, 0, 7, 5, 0, 50, 0, 5};
+    private int[] progressTextPos = new int[] {10, 57};
+    private int[] progressPercentagePos = new int[] {0, 37};
     private int[] GTprogressTextPos = new int[] {0, -65};
     private int[] GTprogressPercentagePos = new int[] {0, -75};
     private int[] tipsTextPos = new int[] {0, 5};

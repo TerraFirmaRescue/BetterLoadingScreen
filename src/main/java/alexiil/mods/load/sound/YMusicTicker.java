@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.Random;
 
+@Deprecated
 public class YMusicTicker implements IUpdatePlayerListBox {
 
     private final Random random = new Random();

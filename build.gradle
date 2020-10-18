@@ -31,7 +31,7 @@ apply plugin: 'forge'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-version = "1.4.1-TFR"
+version = "1.5.0-TFR"
 group= "alexiil.mods.load" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "BetterLoadingScreen"
 
