@@ -7,7 +7,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import alexiil.mods.load.sound.YMusicTicker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.SoundEventAccessorComposite;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.GuiWinGame;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import alexiil.mods.load.ModLoadingListener.State;
@@ -39,6 +47,8 @@ import cpw.mods.fml.common.event.FMLStateEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Lib.Mod.ID, guiFactory = "alexiil.mods.load.gui.ConfigGuiFactory", acceptableRemoteVersions = "*")
 public class BetterLoadingScreen {
@@ -50,7 +60,11 @@ public class BetterLoadingScreen {
     private static List<Release> releases = null;
     private static Commit thisCommit = null;
     public static ModMetadata meta;
-    
+
+    private static Logger log = LogManager.getLogger("betterloadingscreen");
+    private static String defaultSound = "betterloadingscreen:rhapsodia_orb";
+//    private YMusicTicker yMusicTicker;
+
     @EventHandler
     public void construct(FMLConstructionEvent event) throws IOException {
         ModLoadingListener thisListener = null;
@@ -87,6 +101,11 @@ public class BetterLoadingScreen {
         MinecraftForge.EVENT_BUS.register(instance);
         FMLCommonHandler.instance().bus().register(instance);
         meta = event.getModMetadata();
+//
+//        this.yMusicTicker = new YMusicTicker(Minecraft.getMinecraft(), this);
+//
+//        MinecraftForge.EVENT_BUS.register(new YSoundHandler());
+
         /*alexiil.mods.load.MinecraftDisplayer.blending = true;
     	alexiil.mods.load.MinecraftDisplayer.blendingJustSet = true;*/
     }
@@ -113,6 +132,14 @@ public class BetterLoadingScreen {
     public void guiOpen(GuiOpenEvent event) throws IOException {
         if (event.gui != null && event.gui instanceof GuiMainMenu)
             ProgressDisplayer.close();
+//        if (event.gui != null && event.gui instanceof GuiCreateWorld)
+//            new Thread() {
+//                @Override
+//                public void run() {
+//                    try { Thread.sleep(1000); } catch (InterruptedException e) {}
+//                    playSound(defaultSound);
+//                }
+//        }.start();
     }
 
     @SubscribeEvent
@@ -190,5 +217,27 @@ public class BetterLoadingScreen {
         if (contributors == null)
             initSiteVersioning();
         return releases;
+    }
+
+    public static void playSound(String soundString) {
+        SoundHandler soundHandler = Minecraft.getMinecraft().getSoundHandler();
+        ResourceLocation location = new ResourceLocation(soundString);
+        SoundEventAccessorComposite snd = soundHandler.getSound(location);
+        if (snd == null) {
+            log.warn("The sound given (" + soundString + ") did not give a valid sound!");
+            location = new ResourceLocation(defaultSound);
+            snd = soundHandler.getSound(location);
+        }
+        if (snd == null) {
+            log.warn("Default sound did not give a valid sound!");
+            return;
+        }
+        ISound sound = PositionedSoundRecord.func_147673_a(location);
+        soundHandler.playSound(sound);
+    }
+
+    public YMusicTicker.MusicType func_147109_W()
+    {
+        return (Minecraft.getMinecraft().currentScreen instanceof GuiWinGame && Minecraft.getMinecraft().thePlayer != null) ?  YMusicTicker.MusicType.GAME : YMusicTicker.MusicType.MENU;
     }
 }

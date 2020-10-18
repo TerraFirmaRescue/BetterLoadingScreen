@@ -70,8 +70,8 @@ public class MinecraftDisplayer implements IDisplayer {
     private int[] GTprogressPosAnimated = new int[] {0, 24, 194, 24, 0, -83, 188, 12};
     private int[] progressPos = new int[] {0, 5, 7, 10, 0, 0, 0, 70};
     private int[] progressPosAnimated = new int[] {0, 0, 7, 5, 0, 70, 0, 5};
-    private int[] progressTextPos = new int[] {10, 80};
-    private int[] progressPercentagePos = new int[] {10, 80};
+    private int[] progressTextPos = new int[] {10, 77};
+    private int[] progressPercentagePos = new int[] {0, 57};
     private int[] GTprogressTextPos = new int[] {0, -65};
     private int[] GTprogressPercentagePos = new int[] {0, -75};
     private int[] tipsTextPos = new int[] {0, 5};
@@ -713,11 +713,11 @@ public class MinecraftDisplayer implements IDisplayer {
                 //
             }	else {
                 if (!tipsEnabled) {
-                    images = new ImageRender[7];
-                    nonStaticElementsToGo = 6;
-                } else {
                     images = new ImageRender[8];
                     nonStaticElementsToGo = 7;
+                } else {
+                    images = new ImageRender[9];
+                    nonStaticElementsToGo = 8;
                 }
                 //background
                 if (!background.equals("")) {
@@ -734,7 +734,7 @@ public class MinecraftDisplayer implements IDisplayer {
                 //NORMAL progress text
                 images[2] = new ImageRender(fontTexture, EPosition.BOTTOM_LEFT, EType.DYNAMIC_TEXT_STATUS, null, new Area(progressTextPos[0], progressTextPos[1], 0, 0), "ffffff", null, "");
                 //NORMAL progress percentage text
-                images[3] = new ImageRender(fontTexture, EPosition.BOTTOM_RIGHT, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
+                images[3] = new ImageRender(fontTexture, EPosition.BOTTOM_RIGHT, EType.CLEAR_COLOUR, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
                 //Static NORMAL bar image
                 images[4] = new ImageRender(progress, EPosition.BOTTOM_CENTER, EType.ALPHA_STATIC, new Area(progressPos[0], progressPos[1], progressPos[2], progressPos[3]), new Area(progressPos[4], progressPos[5], progressPos[6], progressPos[7]));
                 //Dynamic NORMAL bar image (yellow thing)
@@ -745,6 +745,7 @@ public class MinecraftDisplayer implements IDisplayer {
                     images[6] = new ImageRender(fontTexture, EPosition.valueOf(baseTipsTextPos), EType.TIPS_TEXT, null, new Area(tipsTextPos[0], tipsTextPos[1], 0, 0), tipsColor, tip, "");
                     images[7] = new ImageRender(null, null, EType.CLEAR_COLOUR, null, null, "ffffff", null, "");
                 }
+                images[8] = new ImageRender(fontTexture, EPosition.BOTTOM_CENTER, EType.DYNAMIC_TEXT_PERCENTAGE, null, new Area(progressPercentagePos[0], progressPercentagePos[1], 0, 0), "ffffff", null, "");
             }
         } else {
             shouldGLClear = false;
